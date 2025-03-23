@@ -1,0 +1,28 @@
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body{
+  background-color: #191b1f;
+}
+@font-face {
+  font-family: Alexandria;
+  src: url("/public/fonts/Alexandria-Regular.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: Alexandria;
+  src: url("/public/fonts/Alexandria-Bold.ttf");
+  font-weight: bold;
+}@font-face {
+  font-family: Alexandria;
+  src: url("/public/fonts/Alexandria-Black.ttf");
+  font-weight: 900;
+}@font-face {
+  font-family: Alexandria;
+  src: url("/public/fonts/Alexandria-Light.ttf");
+  font-weight: 200;
+}
