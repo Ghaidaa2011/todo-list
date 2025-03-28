@@ -49,7 +49,7 @@ const Todo = ({
           gap: "5px",
         }}
       >
-        <CardContent>
+        <CardContent sx={{ width: { xs: "200px", sm: "300px", md: "100%" } }}>
           <Typography
             variant="h6"
             sx={{
