@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./App.tsx";
 import { createTheme, ThemeProvider } from "@mui/material";
+import MainLayout from "./layouts/MainLayout.tsx";
 const theme = createTheme({
   typography: { fontFamily: "Alexandria, Arial, sans-serif" },
   palette: { primary: { main: "#ab003c" } },
@@ -9,6 +9,6 @@ const theme = createTheme({
 
 createRoot(document.getElementById("root")!).render(
   <ThemeProvider theme={theme}>
-    <App />
+    <MainLayout />
   </ThemeProvider>
 );

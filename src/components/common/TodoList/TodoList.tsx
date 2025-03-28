@@ -10,80 +10,49 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
+//Spinner
+import CircularProgress from "@mui/material/CircularProgress";
 //Components
 import Todo from "../Todo/Todo";
-//others
-import { v4 as uuid } from "uuid";
-//Hooks
-import { useContext, useEffect, useState } from "react";
-//Contexts
-import { TodosContext } from "../../../contexts/TodosContext";
+//Custom Hook
+import useTodoList from "./useTodoList";
+//Types
+import { TTodo } from "../../../types/todo.types";
 
-const TodoList = () => {
-  const context = useContext(TodosContext);
-  if (!context) {
-    throw new Error("TodosContext must be used within a TodosContext.Provider");
-  }
-  const { todos, setTodos } = context;
+interface ITodoListProps {
+  selectedTodo: TTodo | null;
+  handleOpenDeleteDialog: (selectedTodo: TTodo) => void;
+  handleOpenUpdateDialog: (selectedTodo: TTodo) => void;
+}
 
-  const [titleInput, setTitleInput] = useState("");
+const TodoList = ({
+  handleOpenDeleteDialog,
+  handleOpenUpdateDialog,
+}: ITodoListProps) => {
+  const {
+    filteredTodos,
+    addTodoHandler,
+    handleAddClick,
+    handleDisplayedTodoType,
+    isError,
+    displayedTodoType,
+    titleInput,
+    loading,
+  } = useTodoList();
 
-  const [isError, setIsError] = useState(false); // Tracks input error state
-
-  const [displayedTodoType, setDisplayedTodoType] = useState<
-    "all" | "completed" | "notCompleted"
-  >("all");
-  const handleDisplayedTodoType = (
-    _event: React.MouseEvent<HTMLElement>,
-    newValue: "all" | "completed" | "notCompleted"
-  ) => {
-    setDisplayedTodoType(newValue);
-  };
-  // Filter todos based on active filter
-  const filteredTodos = todos.filter((todo) => {
-    if (displayedTodoType === "completed") {
-      return todo.isCompleted;
-    } else if (displayedTodoType === "notCompleted") {
-      return !todo.isCompleted;
-    }
-    return true; // "all" shows all todos
-  });
   // Render filtered todos
-  const todosList = filteredTodos.map((todo) => (
-    <Todo key={todo.id} {...todo} />
-  ));
-  const addTodoHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleInput(e.target.value);
-    setIsError(false); // Reset error state when user starts typing
-  };
-  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    const newTodo = {
-      id: uuid(),
-      title: titleInput,
-      details: "",
-      isCompleted: false,
-    };
-    // Validate input
-    if (!titleInput.trim() || titleInput.length < 5) {
-      setIsError(true); // Set error state
-      return; // Prevent adding invalid todos
-    }
-    setTodos([...todos, newTodo]);
-    localStorage.setItem("todos", JSON.stringify([...todos, newTodo]));
+  const todosList = filteredTodos.map((todo) => {
+    return (
+      <Todo
+        key={todo.id}
+        {...todo}
+        selectedTodo={todo}
+        handleOpenDeleteDialog={handleOpenDeleteDialog}
+        handleOpenUpdateDialog={handleOpenUpdateDialog}
+      />
+    );
+  });
 
-    // Reset input field
-    setTitleInput("");
-  };
-
-  useEffect(() => {
-    const storageTodos = localStorage.getItem("todos");
-    if (storageTodos) {
-      setTodos(JSON.parse(storageTodos));
-    } else {
-      setTodos([]);
-    }
-  }, [setTodos]);
   return (
     <>
       <Card
@@ -123,7 +92,33 @@ const TodoList = () => {
               width: "100%",
             }}
           >
-            {todosList}
+            {loading ? (
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: "20vh",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress color="primary" />
+              </div>
+            ) : todosList.length > 0 ? (
+              todosList
+            ) : (
+              <Typography
+                color="primary"
+                variant="body1"
+                sx={{
+                  textAlign: "center",
+                  padding: "30px 0px",
+                }}
+              >
+                لم تقم بإضافة أي مهام حتى الآن! 😊
+              </Typography>
+            )}
           </Box>
           {/* ===/// Todos List ///===*/}
         </CardContent>
@@ -140,6 +135,7 @@ const TodoList = () => {
             id="outlined-basic"
             label="عنوان المهمة"
             variant="outlined"
+            autoFocus
             value={titleInput}
             onChange={addTodoHandler}
             sx={{ flexGrow: 3 }}
