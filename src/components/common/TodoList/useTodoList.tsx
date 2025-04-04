@@ -1,11 +1,13 @@
 //Hooks
 import { useEffect, useMemo, useState } from "react";
+//context
 import { useToast } from "../../../contexts/ToastContext";
-
-//Contexts & Reducers
-import { useTodos } from "../../../contexts/TodosContext";
+//Store
+import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { addNewTodo, getTodos } from "../../../store/todos/todosSlice";
 const useTodoList = () => {
-  const { todos, dispatch } = useTodos();
+  const { todos } = useAppSelector((state) => state.todos);
+  const dispatch = useAppDispatch();
 
   const { showHideToast } = useToast();
 
@@ -46,7 +48,7 @@ const useTodoList = () => {
       return; // Prevent adding invalid todos
     }
     setLoading(true);
-    dispatch({ type: "ADD_TODO", payload: { titleInput } });
+    dispatch(addNewTodo({ titleInput }));
     setLoading(false);
     // Reset input field
     setTitleInput("");
@@ -56,7 +58,7 @@ const useTodoList = () => {
 
   useEffect(() => {
     setLoading(true);
-    dispatch({ type: "GET_TODOS" });
+    dispatch(getTodos());
     setLoading(false);
   }, [dispatch]);
 

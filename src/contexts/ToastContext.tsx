@@ -17,7 +17,6 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     message: string,
     variant: "success" | "error" | "warning" | "info"
   ) => {
-    // variant could be success, error, warning, info
     enqueueSnackbar(message, { variant });
   };
   return (

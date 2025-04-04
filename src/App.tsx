@@ -12,10 +12,12 @@ import {
   TextField,
 } from "@mui/material";
 import { useToast } from "./contexts/ToastContext";
-import { useTodos } from "./contexts/TodosContext";
+//store
+import { useAppDispatch } from "./store/hooks";
+import { deleteTodo, updateTodo } from "./store/todos/todosSlice";
 
 function App() {
-  const { dispatch } = useTodos();
+  const dispatch = useAppDispatch();
 
   const { showHideToast } = useToast();
 
@@ -34,7 +36,7 @@ function App() {
   };
   const HandleDelete = () => {
     if (selectedTodo) {
-      dispatch({ type: "DELETE_TODO", payload: selectedTodo.id });
+      dispatch(deleteTodo({ id: selectedTodo.id }));
     }
     handleCloseDeleteDialog();
     //Toast
@@ -57,7 +59,7 @@ function App() {
       setIsError(true); // Set error state
       return; // Prevent adding invalid todos
     }
-    dispatch({ type: "UPDATE_TODO", payload: selectedTodo });
+    dispatch(updateTodo(selectedTodo));
 
     handleCloseUpdateDialog();
     //Toast

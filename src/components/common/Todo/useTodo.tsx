@@ -1,19 +1,20 @@
+//context
 import { useToast } from "../../../contexts/ToastContext";
-import { useTodos } from "../../../contexts/TodosContext";
+//Store
+import { useAppDispatch } from "../../../store/hooks";
+import { isCompletedTodo } from "../../../store/todos/todosSlice";
+//Types
 import { TTodo } from "../../../types/todo.types";
 
 const useTodo = ({ selectedTodo }: { selectedTodo: TTodo }) => {
-  const { dispatch } = useTodos();
+  const dispatch = useAppDispatch();
 
   const { showHideToast } = useToast();
 
   // EVENT HANDLERS
   const handleIsCompleted = (todoId: string) => {
     if (selectedTodo) {
-      dispatch({
-        type: "ISCOMPLETED_TODO",
-        payload: { id: todoId, isCompleted: selectedTodo.isCompleted },
-      });
+      dispatch(isCompletedTodo({ id: todoId }));
     }
     //Toast
     showHideToast(" تم الإضافة إلي المنجزة!", "success");
